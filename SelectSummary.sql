@@ -193,10 +193,86 @@ from emp
 where mod(empno,2) = 1;
 
 
+-- 날짜 함수
+
+select sysdate 
+from dual;
+
+select sysdate - 1 어제, sysdate, sysdate + 1 내일
+from dual;
+
+select sysdate - hiredate as 근무일수  -- 차이가 일수 반환
+from emp;
+
+select trunc((sysdate - hiredate) / 365) 근속년수
+from emp;
+
+select sysdate, to_char(sysdate,'YYYY-MM-DD HH24:MI:SS') as 현재시간
+from dual;
+
+select hiredate ,to_char(hiredate,'YYYY-MM-DD HH24:MI:SS DAY') as 입사일자
+from emp;
+
+select to_char(123456,'L999,999')
+from dual;
+
+select sal, to_char(sal,'L999,999')
+from emp;
+
+select '20000' - 10000
+from dual;
+
+select '20000' - '5000'
+from dual;
+
+select '20,000' - '5,000'
+from dual;
+
+select to_number('20,000','999,999') - to_number('5,000','999,999')
+from dual;
+
+select to_date('20221019','YYYY/MM/DD')
+from dual;
+
+select *
+from emp
+where hiredate < 19820101;
 
 
+select *
+from emp
+where hiredate < to_date('19820101','YYYY-MM-DD');
 
+select *
+from emp
+where mgr is null;
 
+select ename,job,mgr
+from emp
+where mgr is null;
+
+select ename,job,nvl(to_char(mgr,'9999'),'CEO') as mgr
+from emp
+where mgr is null;
+
+select *
+from emp;
+
+select comm, nvl2(comm,'O','X')
+from emp;
+
+select ename,job,deptno,
+	decode(deptno,10,'AAA',20,'BBB',30,'CCC','기타') as 부서명
+from emp;
+
+select ename,job,deptno,
+	case
+	when deptno = 10 then 'AAA'
+	when deptno = 20 then 'BBB'
+	when deptno = 30 then 'CCC'
+	else '기타'
+	end as 부서명
+from emp;
 
 
 
