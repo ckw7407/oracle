@@ -274,16 +274,306 @@ select ename,job,deptno,
 	end as 부서명
 from emp;
 
+select ename,job,sal,
+	case 
+		when sal between 3000 and 5000 then '임원'
+		when sal >= 2000 and sal < 3000 then '관리자'
+		when sal >= 500 and sal < 2000 then '사원'
+		else '기타'
+	end as 직무
+from emp;
+
+
+select empno,rpad(substr(empno,1,2),4,'*') ,
+	ename, rpad(substr(ename,1,1),length(ename),'*')
+from emp
+where length(ename) >= 5
+and  length(ename) < 6;
+
+select empno,ename,sal,
+	trunc(sal / 21.5,2) as Day_pay,
+	round(sal / 21.5 /8,1) as Time_pay
+from emp;
+
+select empno,ename,mgr,
+	case	
+		when substr(mgr,1,2) = '75' then '5555'
+		when substr(mgr,1,2) = '76' then '6666'
+		when substr(mgr,1,2) = '77' then '7777'
+		when substr(mgr,1,2) = '78' then '8888'
+		when mgr is null then '0000'
+		else to_char(mgr)
+	end as CHG_MGR
+from emp;
+
+
+select sum(sal)
+from emp;
+
+select avg(sal)
+from emp;
+
+select count(*),count(comm)
+from emp;
+
+select max(sal),min(sal)
+from emp;
+
+select ename,max(sal)
+from emp;
+
+select max(sal)
+from emp;
+
+select min(hiredate),max(hiredate)
+from emp
+where deptno = 20;
+
+select avg(sal) from emp where deptno = 10
+UNION
+select avg(sal) from emp where deptno = 20
+UNION
+select avg(sal) from emp where deptno = 30;
+
+
+select deptno
+from emp
+group by deptno;
+
+
+select deptno, avg(sal)
+from emp
+group by deptno;
+
+select deptno,avg(sal)
+from emp
+group by deptno
+order by deptno;
+
+select avg(sal)
+from emp
+group by deptno,job;
+
+select deptno, job, avg(sal)
+from emp
+group by deptno, job;
+
+select deptno, job, avg(sal)
+from emp
+group by deptno, job
+order by deptno, job desc;
+
+
+select deptno, avg(sal)
+from emp
+group by deptno
+having avg(sal) >= 2000;
+
+select deptno,avg(sal)
+from emp
+where deptno != 10
+group by deptno
+having avg(sal) >= 2000;
+
+select emp.ename,emp.job,emp.deptno,dept.dname,dept.loc
+from emp,dept
+where emp.deptno = dept.deptno;
+
+select ename,job,emp.deptno,dname,loc
+from emp,dept
+where emp.deptno = dept.deptno;
+
+select ename,job,e.deptno,dname,loc
+from emp e,dept d --테이블에 별칭 부여
+where e.deptno = d.deptno;
+
+select ename,job,e.deptno,dname,loc
+from emp e,dept d --테이블에 별칭 부여
+where e.deptno = d.deptno
+and sal >= 3000;
+
+select ename, sal, grade
+from emp e,salgrade s
+where e.sal between s.losal and s.hisal;
+--where e.sal >= s.losal and e.sal <= s.hisal
+
+select empno,ename,sal,d.deptno,dname,grade
+from emp e, dept d, salgrade s
+where e.deptno = d.deptno
+and e.sal between s.losal and s.hisal;
+
+select ename,mgr
+from emp;
+
+select *
+from emp;
+
+select e.empno,e.ename,e.mgr,m.ename
+from emp e, emp m  -- 반드시 별칭 부여
+where e.mgr = m.empno;
+
+select ename,deptno
+from emp
+where deptno = 20;
+
+select work.ename , friend.ename
+from emp work,emp friend
+where work.deptno = friend.deptno
+and work.ename = 'SCOTT'
+and friend.ename != 'SCOTT';
+
+select e.empno,e.ename,e.mgr,m.ename
+from emp e, emp m  -- 반드시 별칭 부여
+where e.mgr = m.empno(+);  -- 데이터가 없는 데이블쪽에 (+)를 붙인다
+
+select ename,sal,d.deptno,dname
+from emp e,dept d
+where e.deptno(+) = d.deptno;
+
+select ename,sal,dname,loc
+from emp e inner join dept d
+on e.deptno = d.deptno;
+
+select ename,sal,dname,loc
+from emp e inner join dept d
+using(deptno); -- 양쪽 테이블의 컬럼명이 동일한경우
+
+select ename,sal,dname,loc
+from emp e inner join dept d
+using(deptno)
+where ename = 'SCOTT';
+
+select e.empno,e.ename,e.mgr,m.ename
+from emp e inner join emp m
+on e.mgr = m.empno;
+
+select empno,ename,sal,grade
+from emp e inner join salgrade s
+on e.sal between s.losal and s.hisal;
+
+select e.empno,e.ename,e.mgr,m.ename
+from emp e left outer join emp m  -- 데이터가 있는 쪽을 지정한다
+on e.mgr = m.empno;
+
+select empno,ename,sal,d.deptno,dname,grade
+from emp e inner join dept d
+on e.deptno = d.deptno
+inner join salgrade s
+on e.sal between s.losal and s.hisal;
+
+select ename,sal,d.deptno,dname
+from emp e right outer join dept d
+on e.deptno = d.deptno;
+
+
+select d.deptno,d.dname,e.empno,e.ename,e.sal
+from emp e inner join dept d
+on e.deptno = d.deptno
+where e.sal > 2000;
+
+select   
+    e.deptno,
+	dname,
+	trunc(avg(sal)),
+	max(sal),
+	min(sal),
+	count(*)
+from emp e inner join dept d
+on e.deptno = d.deptno
+group by e.deptno,d.dname;
+
+select ename,sal
+from emp
+where sal = (
+		select max(sal)
+		from emp
+	);
+    
+select ename , deptno
+from emp
+where deptno = (
+		select deptno
+		from dept
+		where loc = 'DALLAS'
+	);
+    
+select ename,sal,mgr
+from emp
+where mgr = (
+		select empno
+		from emp
+		where ename = 'KING'
+	);
+
+
+select d.deptno,d.dname,e.empno,e.ename,e.job,e.sal
+from emp e right outer join dept d
+on e.deptno = d.deptno
+order by d.deptno , e.ename;
+
+select d.deptno, d.dname,
+       e.empno,e.ename,e.mgr,e.sal,e.deptno,
+       s.losal,s.hisal,s.grade,
+       m.empno,m.ename
+from emp e right outer join dept d
+on e.deptno = d.deptno
+	full outer join salgrade s
+on e.sal between s.losal and s.hisal
+	left outer join emp m
+on e.mgr = m.empno
+	order by d.deptno, e.empno;
 
 
 
+select trunc(avg(sal)),
+	e.deptno
+from emp e inner join dept d
+using(deptno)
+group by e.deptno;
 
 
+select   
+          deptno,
+	d.dname,
+	trunc(avg(sal)),
+	max(sal),
+	min(sal),
+	count(*)
+from emp inner join dept d
+--on e.deptno = d.deptno
+using(deptno)  --별칭 사용시 적용시 제한된다
+group by deptno,d.dname;
 
-
-
-
-
+select *
+from emp
+where sal in (
+        select max(sal)
+        from emp
+        group by deptno 
+	);
+    
+select *
+from emp
+where sal > any ( 
+ 	select max(sal)
+	from emp
+	group by deptno 
+	);
+    
+select ename,sal
+from emp
+where sal > all(select sal
+                from emp
+                where deptno = 30
+        );
+        
+select *
+from emp
+where (deptno,sal) in (
+			select deptno,max(sal)
+			from emp
+			group by deptno
+		);
 
 
 
