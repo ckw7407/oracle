@@ -577,6 +577,228 @@ where (deptno,sal) in (
 
 
 
+-- DML(조작어)
+
+create table dept_temp
+as
+select * from dept;
+
+select *
+from dept_temp;
+
+insert into dept_temp (deptno,dname,loc)
+values (50,'DATABASE');
+
+insert into dept_temp (deptno,dname)  -- 묵시적  null데이터삽입
+values (60,'JSP');
+
+insert into dept_temp  --컬럼생략
+values (70,'SEOUL');
+
+insert into dept_temp  --컬럼생략
+values (80,NULL,'SEOUL');
+
+create table emp_temp
+as
+select * from emp
+where 1 != 1;
+
+select *
+from emp_temp;
+
+insert into emp_temp(empno,ename,job,mgr,hiredate,sal,comm,deptno)
+values (9999,'홍길동','PRESIDENT',NULL,'2001/01/01',5000,1000,10);
+
+insert into emp_temp(empno,ename,job,mgr,hiredate,sal,comm,deptno)
+values (3111,'심청이','MANAGER',9999,sysdate,4000,null,30);
+
+drop table dept_temp2;
+
+create table dept_temp2
+as
+select * from dept;
+
+select *
+from dept_temp2;
+
+update dept_temp2
+set loc = 'SEOUL';
+
+update dept_temp2
+set dname = 'DATABASE', loc = 'SEOUL'
+where deptno = 40;
+
+drop table emp_temp2;
+
+create table emp_temp2
+as
+select * from emp;
+
+select *
+from emp_temp2;
+
+delete from emp_temp2;
+
+delete from emp_temp2
+where ename = 'SCOTT';
+
+
+drop table dept01;
+
+create table dept01
+as
+select * from dept;
+
+select *
+from dept01;
+
+delete from dept01;
+
+commit;
+rollback;
+
+truncate table dept01;
+rollback;
+
+
+-- DDL
+drop table emp_ddl;
+
+create table emp_ddl(
+    --사번,이름,직책,관리자,입사일,급여,성과급,부서번호
+    empno number(4),
+    ename varchar2(10), -- byte
+    job varchar2(9),
+    mgr number(4),
+    hiredate date,
+    sal number(7,2),
+    comm number(7,2),
+    deptno number(2)
+);
+
+select *
+from emp_DDL;
+
+insert into emp_ddl
+values (9999,'이순신','MANAGER',1111,sysdate,1000,null,10);
+
+create table emp_alter
+as
+select * from emp;
+
+select *
+from emp_alter;
+
+alter table emp_alter
+add address varchar2(100);
+
+alter table emp_alter
+rename column address to addr;
+
+alter table emp_alter
+modify empno number(10);
+
+desc emp_alter;
+
+
+alter table emp_alter
+drop column addr;
+
+drop table emp_alter;
+
+select *
+from emp_alter;
+
+desc user_tables;
+
+select table_name
+from user_tables;
+
+select owner, table_name
+from all_tables;
+
+drop table emp03;
+
+create table emp03
+as
+select * from emp;
+
+select *
+from emp03;
+
+insert into emp03
+select * from emp03;
+
+insert into emp03(empno,ename)
+values (1111,'bts');
+
+
+-- index 객체 생성전 (0.030 ~ 0,040)
+select empno,ename
+from emp03
+where ename = 'bts';
+
+create index idx_emp03_ename
+on emp03(ename);
+
+-- index 객체 생성후 (0.001 ~ 0,002)
+select empno,ename
+from emp03
+where ename = 'bts';
+
+drop index idx_emp03_ename;
+
+show recyclebin;
+
+flashback table emp_alter
+to before drop;
+
+purge recyclebin;
+
+
+-- emp,dept
+
+insert into emp
+values (1111,'aaa','MANAGE',9999,SYSDATE,1000,NULL,50);
+
+--무결성 제약조건(SCOTT.FK_DEPTNO)이 위배되었습니다- 부모 키가 없습니다
+
+drop table emp04;
+
+create table emp04(
+    empno number(4) constraint emp04_empno_pk primary key,  --not null +  unique,
+    ename varchar2(10) constraint emp04_ename_nn not null,
+    job varchar2(9),
+    deptno number(2)
+);
+
+delete from emp04;
+
+select * from emp04;
+
+insert into emp04
+values (1111,'홍길동','MANAGER',30);
+
+insert into emp04
+values (2222,'홍길동','MANAGER',30);
+
+insert into emp04
+values (null,'김유신','SALESMAN',20);
+--NULL을 ("SCOTT"."EMP04"."EMPNO") 안에 삽입할 수 없습니다
+
+insert into emp04
+values (2222,'옥동자','SALESMAN',10);
+--무결성 제약 조건(SCOTT.SYS_C0011295)에 위배됩니다
+--무결성 제약 조건(SCOTT.EMP04_EMPNO_PK)에 위배됩니다
+
+insert into emp04
+values (null,null,'MANAGER',30);
+
+
+
+
+
+
 
 
 
