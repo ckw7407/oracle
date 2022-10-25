@@ -1228,8 +1228,43 @@ select  *from emp01;
 insert into emp01
 values (emp_seq.nextval,'hong',sysdate);
 
+drop table product1;
+
+create table product1(
+    pid varchar2(10),
+    pname varchar2(10),
+    price number(5),
+
+    constraint product_pid_pk primary key(pid)
+);
+
+create sequence idx_product_id
+start with 1000;
+
+insert into product1(pid,pname,price)
+values ('pid' || idx_product_id.nextval,'치즈',2000);
+
+select * from product1;
+
+drop sequence idx_product_id;
+
+grant select
+on emp
+to user01;
+
+revoke select
+on emp
+from user01;
+
+-- scott 접속
+grant select
+on scott.emp
+to mrole2;
 
 
+grant select
+on emp
+to mrole3;
 
 
 
